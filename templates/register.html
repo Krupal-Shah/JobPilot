@@ -1,0 +1,42 @@
+{% extends 'partials/base.html' %}
+{% block title %}Register · JobPilot{% endblock %}
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+{% endblock %}
+{% block content %}
+<main class="auth-page">
+    <article class="auth-card">
+        <span class="auth-eyebrow">Get started</span>
+        <h1>Create your account</h1>
+        <p class="auth-subtitle">Track applications and build your profile.</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="auth-flash" role="alert">
+            {% for category, message in messages %}
+            <p class="auth-flash-{{ category }}">{{ message }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <form method="post" action="{{ url_for('auth.register') }}" class="auth-form">
+            <div class="form-row">
+                <label for="name">Name</label>
+                <input id="name" name="name" type="text" required autocomplete="name">
+            </div>
+            <div class="form-row">
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email" required autocomplete="email">
+            </div>
+            <div class="form-row">
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password" required autocomplete="new-password">
+            </div>
+            <button type="submit" class="auth-primary">Create account <span aria-hidden="true">→</span></button>
+        </form>
+
+        <p class="auth-switch">Already have an account? <a href="{{ url_for('auth.login') }}">Log in</a></p>
+    </article>
+</main>
+{% endblock %}

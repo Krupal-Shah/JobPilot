@@ -1,0 +1,42 @@
+{% extends 'partials/base.html' %}
+{% block title %}Jobs · JobPilot{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{{ url_for('static', filename='css/jobs.css') }}">{% endblock %}
+{% block content %}
+<main class="jobs-page">
+    <header class="jobs-heading">
+        <h1>Early-career tech jobs in Canada</h1>
+    </header>
+
+    <form class="jobs-search" method="get" action="{{ url_for('jobs.index') }}" role="search">
+        <label for="job-search">Search these jobs</label>
+        <div class="jobs-search-row">
+            <input id="job-search" name="q" type="search" maxlength="80" value="{{ query }}" placeholder="Title, company, or location">
+            <button type="submit">Search</button>
+            {% if query %}<a href="{{ url_for('jobs.index') }}">Clear</a>{% endif %}
+        </div>
+    </form>
+
+    <div class="jobs-results-heading"><h2>Open roles</h2><span>{{ jobs | length }} shown</span></div>
+    {% if jobs %}
+    <div class="jobs-grid">
+        {% for job in jobs %}
+        <article class="jobs-card">
+            <div class="jobs-card-top">
+                <span class="jobs-company">{{ job.company }}</span>
+            </div>
+            <h3>{{ job.title }}</h3>
+            <p class="jobs-location">{{ job.location or 'Location not listed' }}</p>
+            <div class="jobs-card-bottom">
+                <span>{% if job.updated_at %}Updated {{ job.updated_at[:10] }}{% endif %}</span>
+                <a href="{{ job.url }}" target="_blank" rel="noopener noreferrer">View job ↗</a>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="jobs-empty" role="{{ 'alert' if error or all_boards_failed else 'status' }}">
+        <h3>{% if error %}{{ error }}{% elif all_boards_failed %}Jobs are unavailable right now.{% elif query %}No matching jobs found.{% else %}No Canada-based jobs found right now.{% endif %}</h3>
+    </div>
+    {% endif %}
+</main>
+{% endblock %}

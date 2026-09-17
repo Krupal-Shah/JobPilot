@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "JobPilot copilot",
+  "version": "0.1.0",
+  "description": "Detects job application forms, fills what it can from your saved profile, and bookmarks postings straight into the tracker.",
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "permissions": ["activeTab", "scripting", "tabs", "storage"],
+  "host_permissions": [
+    "http://127.0.0.1:5050/*",
+    "http://127.0.0.1:8421/*",
+    "https://job-boards.greenhouse.io/*",
+    "https://boards.greenhouse.io/*",
+    "https://jobs.lever.co/*",
+    "https://*.myworkdayjobs.com/*",
+    "https://*.icims.com/*",
+    "https://jobs.smartrecruiters.com/*",
+    "https://apply.workable.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "icons": {}
+}

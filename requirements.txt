@@ -1,0 +1,9 @@
+Flask
+litellm==1.75.9
+python-dotenv>=1.1,<2
+pypdf>=6,<7
+Werkzeug
+
+# apply.py (auto-apply-to-bookmarked automation): stealth browser driving
+playwright==1.62.0
+seleniumbase==4.51.12

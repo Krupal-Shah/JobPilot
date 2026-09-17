@@ -1,0 +1,283 @@
+{% extends 'partials/base.html' %} {% block title %}Dashboard · JobPilot{%
+endblock %} {% block styles %}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/dashboard.css') }}"
+/>
+{% endblock %} {% block content %}
+<main class="dashboard-page">
+  <header class="dashboard-header">
+    <div>
+      <h1>Application tracker</h1>
+      <p>
+        Cards should be automatically added, but you can manually update stages
+        by dragging them.
+      </p>
+    </div>
+    <div class="dashboard-controls">
+      <div class="dashboard-sort">
+        <label for="sortSelect">Sort bookmarked jobs</label>
+        <div class="dashboard-select-wrap">
+          <select id="sortSelect">
+            <option value="best">Best match</option>
+            <option value="title">Title match</option>
+            <option value="skill">Skill match</option>
+            <option value="deadline">Deadline urgency</option>
+          </select>
+        </div>
+      </div>
+      <button type="button" id="applyAllBtn" class="dashboard-secondary">
+        Apply to all bookmarked
+      </button>
+      <button
+        type="button"
+        id="stopAutoApplyBtn"
+        class="dashboard-secondary"
+        hidden
+      >
+        Stop auto-apply
+      </button>
+      <button type="button" id="addApplicationBtn" class="dashboard-primary">
+        + Add application
+      </button>
+    </div>
+  </header>
+
+  <form
+    id="addApplicationForm"
+    class="add-application-card"
+    hidden
+    aria-label="Add an application manually"
+  >
+    <div class="form-row">
+      <label for="companyInput">Company</label>
+      <input id="companyInput" name="company" type="text" required />
+    </div>
+    <div class="form-row">
+      <label for="titleInput">Position</label>
+      <input id="titleInput" name="title" type="text" required />
+    </div>
+    <div class="form-row">
+      <label for="urlInput">Posting URL</label>
+      <input id="urlInput" name="url" type="url" required />
+    </div>
+    <div class="form-row">
+      <label for="descriptionInput">Description (optional)</label>
+      <textarea id="descriptionInput" name="description" rows="4"></textarea>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="dashboard-primary">Save</button>
+      <button
+        type="button"
+        id="cancelAddApplication"
+        class="dashboard-secondary"
+      >
+        Cancel
+      </button>
+    </div>
+    <div id="addApplicationStatus" role="status"></div>
+  </form>
+
+  <div id="boardStatus" role="status" class="board-status"></div>
+
+  <div class="kanban-board" id="kanbanBoard">
+    {% for stage in ['bookmarked', 'applied', 'interview', 'offer', 'rejected']
+    %}
+    <section class="kanban-column" aria-label="{{ stage | capitalize }}">
+      <header class="kanban-column-header">
+        <span>{{ stage | capitalize }}</span>
+        <span class="kanban-count" id="count-{{ stage }}">0</span>
+      </header>
+      <div
+        class="kanban-column-body"
+        data-stage="{{ stage }}"
+        id="column-{{ stage }}"
+      ></div>
+    </section>
+    {% endfor %}
+  </div>
+</main>
+
+<div id="expandModal" class="modal-overlay" hidden>
+  <div
+    class="modal-panel"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modalTitle"
+  >
+    <button
+      type="button"
+      id="modalCloseBtn"
+      class="modal-close"
+      aria-label="Close"
+    >
+      &times;
+    </button>
+    <span class="stage-badge" id="modalStageBadge"></span>
+    <h2 id="modalTitle"></h2>
+    <p id="modalCompany" class="application-company"></p>
+    <h3 class="description-title">Job description</h3>
+    <div
+      id="modalDescription"
+      class="job-description-content"
+      aria-label="Job description"
+    ></div>
+    <div class="modal-actions">
+      <button type="button" id="modalCopyBtn" class="dashboard-secondary">
+        Copy description
+      </button>
+      <a
+        id="modalViewPosting"
+        href="#"
+        target="_blank"
+        rel="noopener noreferrer"
+        >View posting ↗</a
+      >
+    </div>
+    <div class="modal-resume">
+      <a
+        id="modalViewResume"
+        class="dashboard-secondary"
+        target="_blank"
+        rel="noopener"
+        hidden
+        >View saved resume (PDF) ↗</a
+      >
+      <p id="modalResumeStatus" role="status"></p>
+    </div>
+    <button type="button" id="modalRemoveBtn" class="modal-remove">
+      Remove from tracker
+    </button>
+  </div>
+</div>
+
+<div
+  id="documentModal"
+  class="modal-overlay document-modal"
+  hidden
+  data-csrf="{{ session['documents_csrf'] }}"
+>
+  <div
+    class="modal-panel document-panel"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="documentTitle"
+  >
+    <button
+      type="button"
+      id="documentClose"
+      class="modal-close"
+      aria-label="Close document editor"
+    >
+      &times;
+    </button>
+    <p class="document-eyebrow" id="documentJob"></p>
+    <h2 id="documentTitle"></h2>
+    <p id="documentStatus" role="status"></p>
+    <div id="resumeWorkspace" hidden>
+      <div class="document-match" id="documentMatch" role="status"></div>
+      <div class="document-ai-bar">
+        <label for="resumeAiInstruction">Ask AI to edit the resume</label>
+        <textarea
+          id="resumeAiInstruction"
+          rows="2"
+          placeholder="Describe the change you want; review every suggestion before accepting it."
+        ></textarea>
+        <div class="document-actions">
+          <button type="button" id="resumeAskAi" class="dashboard-secondary">
+            Ask AI
+          </button>
+          <button type="button" id="resumeSuggest" class="dashboard-secondary">
+            ⚡ Suggest edits
+          </button>
+        </div>
+      </div>
+      <div
+        id="documentSuggestions"
+        class="document-suggestions"
+        aria-live="polite"
+      ></div>
+      <div class="resume-workspace-grid">
+        <div class="document-preview">
+          <h3>PDF preview</h3>
+          <iframe
+            id="documentPdf"
+            title="Live tailored resume PDF preview"
+          ></iframe>
+          <p>
+            Preview updates as you edit. Save to keep this version for the job.
+          </p>
+        </div>
+        <div class="document-points">
+          <h3>Blocks and points</h3>
+          <p>
+            Show or hide sections, blocks, and points. Edit text and save the
+            version you want to use.
+          </p>
+          <div id="documentSections"></div>
+          <div id="documentEntries"></div>
+        </div>
+      </div>
+      <div class="document-actions">
+        <button type="button" id="resumeSave" class="dashboard-primary">
+          Save tailored resume
+        </button>
+        <button type="button" id="resumeReset" class="dashboard-secondary">
+          Start new draft from current master
+        </button>
+      </div>
+    </div>
+    <div id="textWorkspace" hidden>
+      <div class="document-text-preview">
+        <h3>PDF preview</h3>
+        <iframe
+          id="coverLetterPdf"
+          title="Live cover letter PDF preview"
+        ></iframe>
+        <p>
+          Preview updates as you edit. Save to keep this cover letter for the
+          job.
+        </p>
+      </div>
+      <label for="documentText" id="documentTextLabel"></label>
+      <textarea id="documentText" rows="16"></textarea>
+      <p id="documentWordCount" role="status" aria-live="polite"></p>
+      <label for="documentInstruction">Ask AI for an edit</label>
+      <textarea
+        id="documentInstruction"
+        rows="2"
+        placeholder="Describe the change you want."
+      ></textarea>
+      <div class="document-actions">
+        <button type="button" id="documentAskAi" class="dashboard-secondary">
+          Ask AI
+        </button>
+        <button
+          type="button"
+          id="documentAskSelection"
+          class="dashboard-secondary"
+        >
+          Suggest edit for selected text
+        </button>
+        <button type="button" id="documentGenerate" class="dashboard-secondary">
+          ⚡ Generate new draft
+        </button>
+        <button type="button" id="documentSave" class="dashboard-primary">
+          Save cover letter
+        </button>
+        <button type="button" id="documentCopy" class="dashboard-secondary">
+          Copy LinkedIn message
+        </button>
+      </div>
+      <div
+        id="textSuggestions"
+        class="document-suggestions"
+        aria-live="polite"
+      ></div>
+    </div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+<script src="{{ url_for('static', filename='js/document-editor.js') }}"></script>
+{% endblock %}

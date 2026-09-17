@@ -1,0 +1,378 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>JobPilot copilot</title>
+    <style>
+      /* Same palette as static/css/global.css (docs/UI_STYLE_GUIDE.md) --
+         kept as literal values here since an extension popup can't load
+         the app's stylesheet across origins. */
+      :root {
+        --background: #f7f9fb;
+        --surface: #ffffff;
+        --text-strong: #24313a;
+        --text-normal: #52616e;
+        --text-subtle: #63717e;
+        --accent: #087f9a;
+        --border: #e0e6eb;
+        --primary: #164653;
+        --primary-hover: #0d5b6e;
+        --light-teal-bg: #e9f8fc;
+        --light-teal-text: #087891;
+        --positive-bg: #eaf7ee;
+        --positive-text: #287653;
+        --purple-bg: #f0ecfc;
+        --purple-text: #7055a5;
+        --blue-bg: #e8f5fc;
+        --blue-text: #2b769e;
+        --error-text: #b52d36;
+      }
+      * { box-sizing: border-box; }
+      body {
+        width: 380px;
+        margin: 0;
+        font-family: 'Segoe UI', Arial, sans-serif;
+        color: var(--text-strong);
+        background: var(--background);
+      }
+      header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 18px 20px 16px;
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+      }
+      header .logo {
+        width: 32px;
+        height: 32px;
+        border-radius: 9px;
+        background: var(--primary);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        font-weight: 700;
+        flex-shrink: 0;
+      }
+      header .brand h1 {
+        font-size: 15px;
+        font-weight: 700;
+        margin: 0;
+        letter-spacing: -0.2px;
+        color: var(--text-strong);
+      }
+      header .brand p {
+        font-size: 11px;
+        margin: 2px 0 0;
+        color: var(--text-subtle);
+      }
+
+      main { padding: 16px 20px 20px; }
+
+      .stats-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+      .stat-tile {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 10px 6px;
+        text-align: center;
+      }
+      .stat-tile .stat-value {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--text-strong);
+        line-height: 1.1;
+      }
+      .stat-tile .stat-label {
+        font-size: 10px;
+        color: var(--text-subtle);
+        margin-top: 2px;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+      }
+      .stat-tile.bookmarked .stat-value { color: var(--text-subtle); }
+      .stat-tile.applied .stat-value { color: var(--blue-text); }
+      .stat-tile.interview .stat-value { color: var(--purple-text); }
+
+      .job-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 14px 16px;
+        margin-bottom: 16px;
+        min-height: 76px;
+      }
+      .job-card .job-card-label {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        color: var(--light-teal-text);
+        background: var(--light-teal-bg);
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 5px;
+        margin-bottom: 8px;
+      }
+      .job-card h2 {
+        font-size: 14px;
+        font-weight: 700;
+        margin: 0 0 2px;
+        color: var(--text-strong);
+      }
+      .job-card .job-company {
+        font-size: 12px;
+        color: var(--text-subtle);
+        margin-bottom: 6px;
+      }
+      .job-card .job-description {
+        font-size: 12px;
+        color: var(--text-normal);
+        line-height: 1.5;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      .job-card .job-card-empty {
+        font-size: 12px;
+        color: var(--text-subtle);
+      }
+      .job-card .job-card-expand {
+        background: none;
+        border: none;
+        color: var(--accent);
+        font-size: 11px;
+        font-weight: 600;
+        padding: 6px 0 0;
+        cursor: pointer;
+      }
+      .job-card textarea {
+        width: 100%;
+        min-height: 140px;
+        margin-top: 8px;
+        border: 1px solid var(--border);
+        border-radius: 7px;
+        padding: 8px 10px;
+        font-size: 12px;
+        line-height: 1.5;
+        font-family: inherit;
+        color: var(--text-normal);
+        background: var(--background);
+        resize: vertical;
+      }
+      .job-card .job-card-copy {
+        margin-top: 6px;
+        background: none;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        color: var(--text-normal);
+        font-size: 11px;
+        font-weight: 600;
+        padding: 5px 9px;
+        cursor: pointer;
+      }
+
+      button {
+        font-family: inherit;
+        cursor: pointer;
+        border: none;
+      }
+      button:disabled { cursor: default; opacity: 0.55; }
+
+      #fillBtn, #startApplicationBtn {
+        width: 100%;
+        padding: 13px;
+        font-size: 14.5px;
+        font-weight: 700;
+        background: var(--primary);
+        color: #fff;
+        border-radius: 9px;
+        transition: background 0.12s ease;
+      }
+      #fillBtn:hover:not(:disabled), #startApplicationBtn:hover:not(:disabled) { background: var(--primary-hover); }
+      [hidden] { display: none !important; }
+
+      .row { display: flex; gap: 8px; margin-top: 8px; }
+      .row button {
+        flex: 1;
+        padding: 10px 8px;
+        font-size: 12.5px;
+        font-weight: 600;
+        background: var(--light-teal-bg);
+        color: var(--light-teal-text);
+        border: 1px solid var(--accent);
+        border-radius: 8px;
+        transition: background 0.12s ease;
+      }
+      .row button:hover:not(:disabled) { background: #dff3f9; }
+      #bookmarkBtn.bookmarked {
+        background: var(--positive-bg);
+        border-color: var(--positive-text);
+        color: var(--positive-text);
+      }
+
+      #status {
+        margin-top: 14px;
+        font-size: 12px;
+        line-height: 1.6;
+        white-space: pre-wrap;
+        max-height: 220px;
+        overflow-y: auto;
+        color: var(--text-normal);
+      }
+      #status:empty { margin-top: 0; }
+      .ok { color: var(--positive-text); font-weight: 600; }
+      .bad { color: var(--error-text); font-weight: 600; }
+      .muted { color: var(--text-subtle); }
+
+      .autofill-summary-header {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--text-strong);
+        margin-bottom: 2px;
+      }
+      .autofill-summary-header .review-count {
+        color: var(--light-teal-text);
+      }
+      .autofill-gate-note {
+        font-size: 11px;
+        color: var(--positive-text);
+        margin-bottom: 8px;
+      }
+      .autofill-section h3 {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--text-strong);
+        margin: 12px 0 4px;
+      }
+      .autofill-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .autofill-list li {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12.5px;
+        color: var(--text-normal);
+        padding: 4px 0;
+      }
+      .autofill-list .field-icon {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        flex-shrink: 0;
+      }
+      .autofill-list .field-icon.done {
+        background: var(--blue-text);
+        color: #fff;
+      }
+      .autofill-list .field-icon.review {
+        background: #f7d998;
+        color: #7a5b12;
+      }
+      .autofill-list .field-icon.ai {
+        background: var(--purple-bg);
+        font-size: 9px;
+      }
+
+      .next-job-prompt {
+        margin-top: 12px;
+        background: var(--light-teal-bg);
+        border: 1px solid var(--accent);
+        border-radius: 10px;
+        padding: 12px 14px;
+      }
+      .next-job-prompt .next-job-label {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        color: var(--light-teal-text);
+        display: block;
+        margin-bottom: 4px;
+      }
+      .next-job-prompt .next-job-title {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--text-strong);
+      }
+      .next-job-prompt .next-job-company {
+        font-size: 12px;
+        color: var(--text-subtle);
+        margin-bottom: 8px;
+      }
+      .next-job-prompt button {
+        width: 100%;
+        padding: 8px;
+        font-size: 12.5px;
+        font-weight: 700;
+        background: var(--primary);
+        color: #fff;
+        border-radius: 7px;
+      }
+      .next-job-prompt button:hover { background: var(--primary-hover); }
+
+      footer {
+        padding: 10px 20px 14px;
+        text-align: center;
+        font-size: 10.5px;
+        color: var(--text-subtle);
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="logo" aria-hidden="true">↗</div>
+      <div class="brand">
+        <h1>JobPilot</h1>
+        <p>Autofill copilot</p>
+      </div>
+    </header>
+    <main>
+      <div class="stats-row" role="group" aria-label="Application tracker stats">
+        <div class="stat-tile bookmarked">
+          <div class="stat-value" id="statBookmarked">–</div>
+          <div class="stat-label">Bookmarked</div>
+        </div>
+        <div class="stat-tile applied">
+          <div class="stat-value" id="statApplied">–</div>
+          <div class="stat-label">Applied</div>
+        </div>
+        <div class="stat-tile interview">
+          <div class="stat-value" id="statInterview">–</div>
+          <div class="stat-label">Interviews</div>
+        </div>
+      </div>
+
+      <div class="job-card" id="jobCard">
+        <span class="job-card-label">Detected on this page</span>
+        <div id="jobCardBody" class="job-card-empty">Scanning this page…</div>
+      </div>
+
+      <button id="startApplicationBtn" type="button" hidden>Start application</button>
+      <button id="fillBtn" type="button" hidden>Fill this page</button>
+      <div class="row">
+        <button id="bookmarkBtn" type="button">Bookmark</button>
+        <button id="dashboardBtn" type="button">Dashboard</button>
+      </div>
+      <div id="status" role="status"></div>
+      <div id="nextJobPrompt" role="status"></div>
+    </main>
+    <footer>JobPilot copilot &middot; demo profile</footer>
+    <script src="popup.js"></script>
+  </body>
+</html>

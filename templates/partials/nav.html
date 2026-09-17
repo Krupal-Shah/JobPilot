@@ -1,0 +1,38 @@
+<!-- Nav -->
+<nav>
+    <a href="{{ url_for('index') }}" id="nav_logo">JobPilot</a>
+
+    <div id="mobile_menu">
+        <button id="hamburger" type="button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
+    </div>
+
+    <ul id="nav-links">
+        {% if current_user %}
+        <li>
+            <a href="{{ url_for('dashboard') }}" class="{% if request.path == '/dashboard' %}active{% endif %}">Dashboard</a>
+        </li>
+        <li>
+            <a href="{{ url_for('jobs.index') }}" class="{% if request.blueprint == 'jobs' %}active{% endif %}">Jobs</a>
+        </li>
+        <li>
+            <a href="{{ url_for('profile.index') }}" class="{% if request.blueprint == 'profile' %}active{% endif %}">Profile</a>
+        </li>
+        <li>
+            <form method="post" action="{{ url_for('auth.logout') }}" class="nav-logout-form">
+                <button type="submit" class="nav-logout">Log out</button>
+            </form>
+        </li>
+        {% else %}
+        <li>
+            <a href="{{ url_for('auth.login') }}" class="{% if request.path == '/auth/login' %}active{% endif %}">Log in</a>
+        </li>
+        <li>
+            <a href="{{ url_for('auth.register') }}" class="{% if request.path == '/auth/register' %}active{% endif %}">Register</a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>

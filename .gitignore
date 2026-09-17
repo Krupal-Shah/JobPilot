@@ -1,0 +1,20 @@
+/venv
+/node_modules
+
+__pycache__
+*.pyc
+*.db
+.env
+
+.vscode/
+.venv
+
+# apply.py auto-apply run artifacts -- personal application screenshots
+# and a persistent logged-in Chrome profile, never meant to be committed
+/screenshots
+/chrome_user_profile
+/summary.md
+/downloaded_files
+
+notes.md
+assets/master_resumes

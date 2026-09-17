@@ -1,0 +1,84 @@
+{% extends 'partials/base.html' %}
+{% block title %}Profile · JobPilot{% endblock %}
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+{% endblock %}
+{% block content %}
+<main class="profile-page">
+    <header class="profile-heading">
+        <p class="profile-eyebrow">YOUR ACCOUNT</p>
+        <h1>Profile &amp; resume</h1>
+    </header>
+    {% for category, message in get_flashed_messages(with_categories=true) %}
+    <p class="{{ 'profile-save-confirmation' if category == 'success' else 'profile-note' }}" role="{{ 'status' if category == 'success' else 'alert' }}">
+        {% if category == 'success' %}<span aria-hidden="true">✓</span>{% endif %}{{ message }}
+    </p>
+    {% endfor %}
+    <div class="profile-grid">
+        <section class="profile-card" aria-labelledby="account-heading">
+            <h2 id="account-heading">Account details</h2>
+            <dl class="profile-details">
+                <div><dt>Name</dt><dd>{{ current_user.name }}</dd></div>
+                <div><dt>Email</dt><dd>{{ current_user.email }}</dd></div>
+            </dl>
+        </section>
+        <section class="profile-card" aria-labelledby="autofill-heading">
+            <h2 id="autofill-heading">Saved autofill details</h2>
+            <p class="profile-note">Add your details here before using autofill. Empty fields will be left for you to complete.</p>
+            {% if errors %}<p class="profile-error" role="alert">Please correct the highlighted fields. Your changes have not been saved.</p>{% endif %}
+            <form method="post" action="{{ url_for('profile.index') }}" class="profile-form">
+                <input type="hidden" name="csrf_token" value="{{ session['profile_csrf_token'] }}">
+                {% for label, key in fields %}
+                <div class="profile-field">
+                    {% if key in ['desired_titles', 'skills'] %}
+                        <div class="profile-field-heading">
+                            <label for="profile-{{ key }}">{{ label }}</label>
+                            <span class="profile-help">
+                                <button type="button" aria-label="Formatting help for {{ label }}" aria-describedby="hint-{{ key }}">?</button>
+                                <span class="profile-tooltip" id="hint-{{ key }}" role="tooltip">Enter comma-separated values, e.g. "{{ 'backend engineer, data engineer' if key == 'desired_titles' else 'Python, SQL, Docker' }}".</span>
+                            </span>
+                        </div>
+                        <textarea id="profile-{{ key }}" name="{{ key }}" maxlength="1000" rows="3"{% if key in errors %} aria-invalid="true" aria-describedby="error-{{ key }}"{% endif %}>{{ values[key] }}</textarea>
+                    {% else %}
+                        <label for="profile-{{ key }}">{{ label }}</label>
+                        <input id="profile-{{ key }}" name="{{ key }}" value="{{ values[key] }}"
+                               type="{{ 'email' if key == 'email' else 'url' if key in ['linkedin', 'github'] else 'tel' if key == 'phone' else 'text' }}"
+                               maxlength="500"{% if key in errors %} aria-invalid="true" aria-describedby="error-{{ key }}"{% endif %}>
+                    {% endif %}
+                    {% if key in errors %}<p id="error-{{ key }}" class="profile-error">{{ errors[key] }}</p>{% endif %}
+                </div>
+                {% endfor %}
+                <button type="submit">Save autofill details</button>
+            </form>
+        </section>
+    </div>
+    <section class="profile-card profile-resume" aria-labelledby="resume-heading">
+        <h2 id="resume-heading">Master resume</h2>
+        <p>Upload your template-compatible LaTeX resume to replace your master and fill recognizable profile details. Later uploads replace your previous copy.</p>
+        {% if upload_error %}<p id="resume-upload-error" class="profile-error" role="alert">{{ upload_error }}</p>{% endif %}
+        <form class="profile-upload" method="post" action="{{ url_for('profile.upload_resume') }}" enctype="multipart/form-data">
+            <input type="hidden" name="csrf_token" value="{{ session['profile_csrf_token'] }}">
+            <label for="master-resume-upload">Master resume (.tex, up to 1 MB)</label>
+            <div class="profile-upload-controls">
+                <input id="master-resume-upload" type="file" name="master_resume" accept=".tex,text/x-tex" required{% if upload_error %} aria-invalid="true" aria-describedby="resume-upload-error"{% endif %}>
+                <button type="submit">Upload master resume</button>
+            </div>
+        </form>
+        {% if master_error %}
+        <p class="profile-error" role="alert">{{ master_error }}</p>
+        {% else %}
+        <div class="profile-actions">
+            <a href="{{ url_for('profile.edit_resume') }}">Edit master resume</a>
+            {% if compiler_available %}
+            <a href="{{ url_for('profile.master_pdf') }}" target="_blank" rel="noopener">Open PDF in a new tab</a>
+            {% endif %}
+        </div>
+        {% if compiler_available %}
+        <iframe class="profile-pdf" src="{{ url_for('profile.master_pdf') }}" title="Master resume PDF preview"></iframe>
+        {% else %}
+        <p class="profile-note" role="status">PDF preview is unavailable because the server is missing pdflatex. Install the LaTeX compiler to view your resume here.</p>
+        {% endif %}
+        {% endif %}
+    </section>
+</main>
+{% endblock %}

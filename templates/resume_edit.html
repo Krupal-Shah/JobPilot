@@ -1,0 +1,78 @@
+{% extends 'partials/base.html' %}
+{% block title %}Edit master resume · JobPilot{% endblock %}
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/resume-editor.css') }}">
+<script src="{{ url_for('static', filename='js/resume-editor.js') }}" defer></script>
+{% endblock %}
+{% block content %}
+<main class="resume-editor-page">
+    <header class="resume-editor-heading">
+        <div>
+            <a class="resume-editor-back" href="{{ url_for('profile.index') }}">← Back to profile</a>
+            <h1>Edit master resume</h1>
+            <p>Edit the text in each section. Saving updates the LaTeX master for your account and the resume used for future applications.</p>
+        </div>
+        {% if compiler_available %}
+        <a class="resume-editor-preview" href="{{ url_for('profile.master_pdf') }}" target="_blank" rel="noopener">View current PDF ↗</a>
+        {% endif %}
+    </header>
+
+    {% if editor_error %}
+    <p class="resume-editor-error-summary" role="alert">{{ editor_error }}</p>
+    {% else %}
+    {% if errors %}
+    <p class="resume-editor-error-summary" role="alert">Please correct the highlighted fields. Your master resume has not been changed.</p>
+    {% endif %}
+    <form method="post" action="{{ url_for('profile.edit_resume') }}" class="resume-editor-form">
+        <input type="hidden" name="csrf_token" value="{{ session['resume_csrf_token'] }}">
+        <input type="hidden" name="source_version" value="{{ source_version }}">
+        <input type="hidden" name="structure" value='{{ structure | tojson }}'>
+        <p class="resume-editor-live-status" role="status" aria-live="polite"></p>
+        {% set ns = namespace(category='') %}
+        {% for group in groups %}
+        {% if group.category and group.category != ns.category %}
+        <div class="resume-editor-category-heading" data-category-heading="{{ group.category }}">
+            <div><h2>{{ {'experience': 'Experience', 'projects': 'Projects', 'leadership': 'Leadership & activities'}[group.category] }}</h2>
+            <p>Keep at least {{ {'experience': 2, 'projects': 1, 'leadership': 1}[group.category] }} {{ 'entries' if group.category == 'experience' else 'entry' }} for resume tailoring.</p></div>
+            <button type="button" class="resume-editor-add-entry" data-add-entry="{{ group.category }}">+ Add {{ {'experience': 'experience', 'projects': 'project', 'leadership': 'leadership entry'}[group.category] }}</button>
+        </div>
+        {% endif %}
+        {% set ns.category = group.category %}
+        <section class="resume-editor-card" aria-labelledby="group-{{ loop.index }}"{% if group.category %} data-entry-id="{{ group.entry_id }}" data-category="{{ group.category }}"{% endif %}>
+            <div class="resume-editor-card-heading"><h2 id="group-{{ loop.index }}">{{ group.title }}</h2>
+            {% if group.category %}
+            {% if group.category != 'projects' %}
+            <label class="resume-editor-section-control">Section
+                <select data-entry-section aria-label="Section for {{ group.title }}">
+                    <option value="experience"{% if group.category == 'experience' %} selected{% endif %}>Experience</option>
+                    <option value="leadership"{% if group.category == 'leadership' %} selected{% endif %}>Leadership & activities</option>
+                </select>
+            </label>
+            {% endif %}
+            <button type="button" class="resume-editor-remove-entry" data-remove-entry>Remove {{ 'project' if group.category == 'projects' else 'entry' }}</button>{% endif %}</div>
+            <div class="resume-editor-fields">
+                {% for field in group.fields %}
+                <div class="resume-editor-field{% if field.multiline %} resume-editor-field-wide{% endif %}"{% if group.category and field.multiline %} data-bullet-id="{{ field.name }}"{% endif %}>
+                    {% if group.category and field.multiline %}<div class="resume-editor-bullet-heading">{% endif %}
+                    <label for="{{ field.name }}">{{ field.label }}</label>
+                    {% if group.category and field.multiline %}<button type="button" class="resume-editor-remove-bullet" data-remove-bullet>Remove point</button></div>{% endif %}
+                    {% if field.multiline %}
+                    <textarea id="{{ field.name }}" name="{{ field.name }}" maxlength="{{ field.max_length }}" rows="2" required{% if field.name in errors %} aria-invalid="true" aria-describedby="error-{{ field.name }}"{% endif %}>{{ values[field.name] }}</textarea>
+                    {% else %}
+                    <input id="{{ field.name }}" name="{{ field.name }}" type="{{ field.input_type }}" maxlength="{{ field.max_length }}" value="{{ values[field.name] }}" required{% if field.name in errors %} aria-invalid="true" aria-describedby="error-{{ field.name }}"{% endif %}>
+                    {% endif %}
+                    {% if field.name in errors %}<p class="resume-editor-field-error" id="error-{{ field.name }}">{{ errors[field.name] }}</p>{% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% if group.category %}<button type="button" class="resume-editor-add-bullet" data-add-bullet>+ Add point</button>{% endif %}
+        </section>
+        {% endfor %}
+        <div class="resume-editor-actions">
+            <a href="{{ url_for('profile.index') }}">Cancel</a>
+            <button type="submit">Save master resume</button>
+        </div>
+    </form>
+    {% endif %}
+</main>
+{% endblock %}

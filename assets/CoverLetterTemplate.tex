@@ -1,0 +1,21 @@
+% JobPilot one-page cover letter template. The contact header is copied from
+% the user's master resume at render time, so name and links stay in sync.
+\documentclass[letterpaper,11pt]{article}
+\usepackage[margin=0.8in]{geometry}
+\usepackage[hidelinks]{hyperref}
+\usepackage{parskip}
+\pagestyle{empty}
+\newcommand{\lettercontent}[1]{#1\par\medskip}
+\begin{document}
+%%JOBPILOT_HEADER%%
+\noindent\textbf{%%JOBPILOT_COMPANY%%}\hfill %%JOBPILOT_DATE%%\par\medskip
+
+% Opening: state the role, where you found it, and why you are writing.
+% Mention a company contact only if the user supplied one.
+% Middle: connect verified resume evidence to job requirements. Expand on
+% relevant work, projects, or coursework with concrete examples. Use short
+% paragraphs rather than one long block, and avoid repeating resume bullets.
+% Closing: thank the reader and express interest in speaking further.
+% Keep the full letter at 350 words or fewer so it fits on one page.
+%%JOBPILOT_BODY%%
+\end{document}

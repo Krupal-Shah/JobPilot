@@ -1,0 +1,324 @@
+%-------------------------
+% Resume in Latex
+% Author : Jake Gutierrez
+% Based off of: https://github.com/sb2nov/resume
+% License : MIT
+%-------------------------
+
+\documentclass[letterpaper,11pt]{article}
+
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage{tabularx}
+\usepackage{ragged2e}
+\input{glyphtounicode}
+
+
+%----------FONT OPTIONS----------
+% sans-serif
+% \usepackage[sfdefault]{FiraSans}
+% \usepackage[sfdefault]{roboto}
+% \usepackage[sfdefault]{noto-sans}
+% \usepackage[default]{sourcesanspro}
+
+% serif
+% \usepackage{CormorantGaramond}
+% \usepackage{charter}
+
+
+\pagestyle{fancy}
+\fancyhf{} % clear all header and footer fields
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Adjust margins
+\addtolength{\oddsidemargin}{-0.5in}
+\addtolength{\evensidemargin}{-0.5in}
+\addtolength{\textwidth}{1in}
+\addtolength{\topmargin}{-.5in}
+\addtolength{\textheight}{1.0in}
+
+\urlstyle{same}
+
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+% Sections formatting
+\titleformat{\section}{
+  \vspace{-4pt}\scshape\raggedright\large
+}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
+
+% Ensure that generated PDF is machine readable/ATS parsable
+\pdfgentounicode=1
+
+%-------------------------
+% Custom commands
+\newcommand{\resumeItem}[1]{
+  \item\small{
+    {#1 \vspace{-2pt}}
+  }
+}
+
+\newcommand{\resumeSubheading}[4]{
+  \vspace{-2pt}\item
+    \begin{tabular*}{\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & #2 \\
+      \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeSubSubheading}[2]{
+    \item
+    \begin{tabular*}{\textwidth}{l@{\extracolsep{\fill}}r}
+      \textit{\small#1} & \textit{\small #2} \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeProjectHeading}[2]{
+    \item
+    \begin{tabular*}{\textwidth}{l@{\extracolsep{\fill}}r}
+      \small#1 & #2 \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+% Publication format used by uploaded resumes such as assets/reesume.tex.
+\newcommand{\resumePublicationItem}[4]{
+    \vspace{-2pt}\item\small
+    \href{#3}{#1}, \textit{#2, #4}\vspace{-2pt}
+}
+
+\newcommand{\resumeSubItem}[1]{\resumeItem{#1}\vspace{-4pt}}
+
+\renewcommand\labelitemii{$\vcenter{\hbox{\tiny$\bullet$}}$}
+
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.0in, label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}[leftmargin=0.2in]}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-5pt}}
+
+%-------------------------------------------
+%%%%%%  RESUME STARTS HERE  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+
+%----------HEADING----------
+\begin{center}
+    \textbf{\Large Jake Ryan} \\ \vspace{1pt}
+    \small 123-456-7890 $|$ \href{mailto:x@x.com}{\underline{jake@su.edu}} $|$
+    \href{https://linkedin.com/in/...}{\underline{linkedin.com/in/jake}} $|$
+    \href{https://github.com/...}{\underline{github.com/jake}} $|$
+    \href{https://example.com/portfolio}{Portfolio}
+\end{center}
+
+% Optional sections supported by the editor and resume importer. Add only
+% truthful details to a personal master resume; omit any section you do not use.
+% \section{Profile Summary}
+% \resumeSubHeadingListStart
+%   \item One concise sentence about your verified background and focus.
+% \resumeSubHeadingListEnd
+%
+% \section{Publications}
+% \resumeSubHeadingListStart
+%   \resumePublicationItem{Title}{Journal or venue}{https://example.com}{Date}
+% \resumeSubHeadingListEnd
+%
+% \section{Certifications}
+% \resumeSubHeadingListStart
+%   \resumeProjectHeading{Certification and issuer}{Date}
+%   \resumeItemListStart
+%     \resumeItem{One verified detail, if useful.}
+%   \resumeItemListEnd
+% \resumeSubHeadingListEnd
+
+
+%-----------EDUCATION-----------
+\section{Education}
+  \resumeSubHeadingListStart
+    \resumeSubheading
+      {University of Alberta}{Edmonton, AB}
+      {Bachelor of Science in Computing Science, Specialization in Artificial Intelligence}{Expected May 2027}
+      \resumeItemListStart
+        \resumeItem{\textbf{Relevant Coursework:} Algorithms, Operating Systems, Database Management Systems, Computer Networks, Advanced Machine Learning, Intro to Artificial Intelligence, Software Engineering, Web Applications and Architecture, Computer Vision, Intro to Robotics, Natural Language Processing, Reinforcement Learning}
+      \resumeItemListEnd
+  \resumeSubHeadingListEnd
+
+
+%-----------EXPERIENCE-----------
+\section{Work Experience}
+  \resumeSubHeadingListStart
+
+    \resumeSubheading
+      {Software Engineering Intern}{May 2026 -- Aug. 2026}
+      {Amazon}{Vancouver, BC}
+      \resumeItemListStart
+        \resumeItem{Built and deployed a Python and Java service for validating and processing high-volume application events, reducing manual data-quality checks by 60\% across the development workflow}
+        \resumeItem{Designed REST APIs and asynchronous processing pipelines using Java, Spring Boot, Amazon SQS, and DynamoDB to support reliable ingestion of 2M+ events per day}
+        \resumeItem{Improved service latency by 35\% by profiling database access patterns and introducing targeted caching}
+        \resumeItem{Implemented unit, integration, and end-to-end tests using JUnit and Mockito, raising coverage from 62\% to 91\%}
+        \resumeItem{Collaborated with 6 engineers through code reviews and Agile development practices}
+      \resumeItemListEnd
+
+    \resumeSubheading
+      {Software Developer Intern}{May 2025 -- Aug. 2025}
+      {Microsoft}{Vancouver, BC}
+      \resumeItemListStart
+        \resumeItem{Developed features for an internal developer productivity platform using TypeScript, React, C\#, and .NET, supporting engineering workflows across multiple product teams}
+        \resumeItem{Built reusable React components and backend API endpoints for aggregating build, test, and deployment metrics from distributed development pipelines}
+        \resumeItem{Optimized a data-processing workflow handling 500K+ daily records through batched requests and parallel processing, reducing processing time by 42\%}
+        \resumeItem{Added automated monitoring and structured logging using Azure Application Insights}
+        \resumeItem{Participated in weekly design reviews and shipped 8 production changes through pull-request based development}
+      \resumeItemListEnd
+
+    \resumeSubheading
+      {Undergraduate Research Assistant}{Sep. 2024 -- Apr. 2025}
+      {University of Alberta -- Department of Computing Science}{Edmonton, AB}
+      \resumeItemListStart
+        \resumeItem{Investigated machine learning methods for anomaly detection in large-scale system telemetry}
+        \resumeItem{Developed reproducible Python data pipelines using pandas, NumPy, and PyTorch to clean, transform, and analyze 10M+ time-series observations}
+        \resumeItem{Implemented and evaluated classification and anomaly-detection models, comparing precision, recall, F1-score, and inference latency across multiple approaches}
+        \resumeItem{Designed experiments to study model performance under class imbalance and distribution shifts}
+        \resumeItem{Built visualization and evaluation tooling with Matplotlib and Jupyter to accelerate experiment analysis}
+      \resumeItemListEnd
+
+
+  \resumeSubHeadingListEnd
+
+
+%-----------PROJECTS-----------
+\section{Technical Projects}
+    \resumeSubHeadingListStart
+
+      \resumeProjectHeading
+          {\textbf{Distributed Task Queue} $|$ \emph{Go, gRPC, Redis, Docker, PostgreSQL, Kubernetes}}{Jan. 2026 -- Present}
+          \resumeItemListStart
+            \resumeItem{Designed a distributed job-processing system in Go supporting async task submission and failure recovery}
+            \resumeItem{Built a gRPC API and Redis-backed queue architecture distributing workloads across multiple worker processes}
+            \resumeItem{Implemented exponential backoff, heartbeat health checks, and idempotent task execution for crash recovery}
+            \resumeItem{Containerized the system with Docker and deployed a multi-node test environment using Kubernetes}
+          \resumeItemListEnd
+
+      \resumeProjectHeading
+          {\textbf{CampusFlow} $|$ \emph{TypeScript, Next.js, Python, FastAPI, PostgreSQL, Redis}}{Sep. 2025 -- Dec. 2025}
+          \resumeItemListStart
+            \resumeItem{Built a full-stack course planning platform combining course data and prerequisites into degree recommendations}
+            \resumeItem{Developed a FastAPI backend with PostgreSQL and Redis caching to reduce repeated database queries}
+            \resumeItem{Created an interactive Next.js interface to visualize prerequisite graphs and compare schedules}
+            \resumeItem{Implemented authentication, input validation, and automated API tests with a Docker-based CI/CD workflow}
+          \resumeItemListEnd
+
+      \resumeProjectHeading
+          {\textbf{Vision-Based Recycling Sorter} $|$ \emph{Python, PyTorch, OpenCV, Raspberry Pi, Arduino}}{May 2025 -- Aug. 2025}
+          \resumeItemListStart
+            \resumeItem{Developed an embedded computer-vision system that classifies recyclables and controls a sorting mechanism}
+            \resumeItem{Trained a lightweight CNN in PyTorch achieving 91\% validation accuracy across 6 material classes}
+            \resumeItem{Used OpenCV for preprocessing and deployed an optimized inference pipeline on a Raspberry Pi}
+            \resumeItem{Integrated the Raspberry Pi with an Arduino-controlled servo to physically route sorted objects}
+          \resumeItemListEnd
+
+      \resumeProjectHeading
+          {\textbf{SecureDrop} $|$ \emph{Python, Flask, PostgreSQL, Docker, RSA, AES}}{Jan. 2025 -- Apr. 2025}
+          \resumeItemListStart
+            \resumeItem{Developed a secure file-sharing app with encrypted uploads, expiring links, and access control}
+            \resumeItem{Implemented hybrid encryption using AES for file contents and RSA for secure key exchange}
+            \resumeItem{Added password hashing, rate limiting, and secure session handling against common web vulnerabilities}
+            \resumeItem{Containerized the application with Docker and wrote security-focused integration tests}
+          \resumeItemListEnd
+
+      \resumeProjectHeading
+          {\textbf{AlgoArena} $|$ \emph{C++, Python, React, WebSockets, Docker}}{Oct. 2024 -- Dec. 2024}
+          \resumeItemListStart
+            \resumeItem{Built a real-time competitive programming platform supporting contests, submissions, and judging}
+            \resumeItem{Implemented a sandboxed C++ execution service evaluating submissions under CPU and memory limits}
+            \resumeItem{Used WebSockets to push live leaderboard updates without requiring page refreshes}
+            \resumeItem{Designed a Docker-based judge architecture isolating untrusted submissions from the application server}
+          \resumeItemListEnd
+
+      \resumeProjectHeading
+          {\textbf{TrailSense} --- Hackathon Project $|$ \emph{Python, React Native, TensorFlow, GPS, Firebase}}{Mar. 2025}
+          \resumeItemListStart
+            \resumeItem{Built a mobile app analyzing hiking activity to provide trail difficulty and safety recommendations}
+            \resumeItem{Developed a lightweight TensorFlow model classifying trail segments by relative difficulty}
+            \resumeItem{Implemented a React Native interface with interactive maps and real-time activity tracking}
+            \resumeItem{Collaborated with a 4-person team across mobile, ML, and backend during a 36-hour hackathon}
+          \resumeItemListEnd
+
+      \resumeProjectHeading
+          {\textbf{MiniShell} $|$ \emph{C, Linux, POSIX, Make, GDB}}{Sep. 2024 -- Oct. 2024}
+          \resumeItemListStart
+            \resumeItem{Implemented a Unix-style command-line shell in C supporting pipelines and redirection}
+            \resumeItem{Used fork, exec, pipe, dup2, and signal handling to manage child processes}
+            \resumeItem{Built a custom parser for command arguments and redirection syntax}
+          \resumeItemListEnd
+
+    \resumeSubHeadingListEnd
+
+%-----------LEADERSHIP & ACTIVITIES-----------
+\section{Extra-Curricular Activities}
+  \resumeSubHeadingListStart
+
+    \resumeSubheading
+      {Vice President, Technology}{Sep. 2025 -- Present}
+      {University of Alberta Computer Science Club}{Edmonton, AB}
+      \resumeItemListStart
+        \resumeItem{Lead a 12-member technical team running workshops and events for 300+ computing science students}
+        \resumeItem{Organized 10+ workshops on Git, web dev, cloud computing, and interview preparation}
+        \resumeItem{Introduced a mentorship program connecting upper-year students with first- and second-years}
+      \resumeItemListEnd
+
+    \resumeSubheading
+      {Hackathon Organizer}{Jan. 2025 -- Present}
+      {University of Alberta -- HackED}{Edmonton, AB}
+      \resumeItemListStart
+        \resumeItem{Helped organize a 36-hour student hackathon with 200+ participants and judging infrastructure}
+        \resumeItem{Developed and maintained event tooling for project submissions and judging workflows}
+        \resumeItem{Mentored teams during the event on software architecture, debugging, and deployment}
+      \resumeItemListEnd
+
+    \resumeSubheading
+      {Undergraduate Teaching Assistant}{Sep. 2025 -- Apr. 2026}
+      {University of Alberta -- Department of Computing Science}{Edmonton, AB}
+      \resumeItemListStart
+        \resumeItem{Supported weekly labs and office hours for 100+ students in programming and data structures}
+        \resumeItem{Explained complex programming concepts through debugging sessions and practical examples}
+        \resumeItem{Assisted with assignments and labs, providing feedback on correctness, code quality, and testing}
+      \resumeItemListEnd
+
+    \resumeSubheading
+      {Peer Mentor}{Sep. 2024 -- Apr. 2025}
+      {University of Alberta -- Computing Science Students' Society}{Edmonton, AB}
+      \resumeItemListStart
+        \resumeItem{Mentored first-year students on course planning, programming, and internship preparation}
+        \resumeItem{Led small-group sessions on Git/GitHub, resume development, and technical interviews}
+      \resumeItemListEnd
+
+  \resumeSubHeadingListEnd
+
+
+%-----------TECHNICAL SKILLS-----------
+\section{Technical Skills}
+
+\begin{itemize}[leftmargin=0.15in, label={}]
+  \small{\item{
+    \textbf{Languages}{: Python, Java, C++, C, Go, C\#, TypeScript, JavaScript, SQL, Bash, HTML/CSS} \\
+    \textbf{Frameworks}{: React, Next.js, Node.js, FastAPI, Flask, Spring Boot, .NET, React Native} \\
+    \textbf{ML \& Data}{: PyTorch, TensorFlow, scikit-learn, OpenCV, pandas, NumPy, Matplotlib, Jupyter} \\
+    \textbf{Databases}{: PostgreSQL, MySQL, MongoDB, Redis, DynamoDB} \\
+    \textbf{Cloud \& Infrastructure}{: AWS, Azure, Docker, Kubernetes, GitHub Actions, Linux, REST APIs, gRPC} \\
+    \textbf{Developer Tools}{: Git, GitHub, GDB, Valgrind, CMake, Make, Postman, VS Code, IntelliJ IDEA, Visual Studio} \\
+  }}
+\end{itemize}
+
+
+%-------------------------------------------
+\end{document}

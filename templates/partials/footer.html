@@ -1,0 +1,5 @@
+<!-- Footer -->
+<footer class="footer">
+    <span>JobPilot</span>
+    <a href="{{ url_for('dashboard') if current_user else url_for('auth.login') }}">{{ 'Dashboard' if current_user else 'Log in' }}</a>
+</footer>

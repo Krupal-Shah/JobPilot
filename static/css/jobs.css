@@ -1,0 +1,28 @@
+.jobs-page { max-width: 1120px; margin: 36px auto; padding: 0 24px 64px; }
+.jobs-heading { margin-bottom: 24px; }
+.jobs-heading h1 { margin: 0; }
+.jobs-search { margin: 0 0 24px; }
+.jobs-search label { display: block; margin-bottom: 8px; font-size: 14px; font-weight: 600; }
+.jobs-search-row { display: flex; align-items: center; gap: 10px; }
+.jobs-search input { flex: 1; min-width: 0; min-height: 44px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text-strong); }
+.jobs-search button { min-height: 44px; padding: 10px 18px; border: 0; border-radius: 8px; background: #164653; color: #fff; font-weight: 600; cursor: pointer; }
+.jobs-search button:hover { background: #0d5b6e; }
+.jobs-search-row a { padding: 10px; font-size: 14px; font-weight: 600; }
+.jobs-results-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+.jobs-results-heading h2 { margin: 0; font-size: 22px; }
+.jobs-results-heading span { color: var(--text-subtle); font-size: 14px; }
+.jobs-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.jobs-card { display: flex; flex-direction: column; min-width: 0; padding: 22px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); }
+.jobs-card-top, .jobs-card-bottom { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.jobs-company { color: var(--text-normal); font-size: 13px; font-weight: 700; }
+.jobs-card h3 { margin: 14px 0 6px; font-size: 19px; overflow-wrap: anywhere; }
+.jobs-location { font-size: 14px; }
+.jobs-card-bottom { margin-top: auto; padding-top: 20px; }
+.jobs-card-bottom span { color: var(--text-subtle); font-size: 12px; }
+.jobs-card-bottom a { flex: none; font-size: 14px; font-weight: 700; }
+.jobs-empty { padding: 36px 24px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); text-align: center; }
+.jobs-empty h3 { margin: 0 0 8px; }
+@media (max-width: 720px) {
+    .jobs-page { margin-top: 26px; padding: 0 16px 48px; }
+    .jobs-grid { grid-template-columns: 1fr; }
+}
